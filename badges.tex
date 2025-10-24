@@ -1,0 +1,112 @@
+\documentclass[12pt]{article}
+% Both datatool and ticket use inspired by 
+% https://tex.stackexchange.com/questions/94582/automating-the-creation-of-name-badges-for-an-event
+% and https://gitlab.com/redhat/research
+
+% Load the ticket system
+\usepackage[crossmark]{ticket}
+
+% Page style
+%\usepackage[landscape]{geometry}
+\usepackage[paperheight=320mm,paperwidth=450mm,margin=10mm]{geometry}
+\setlength{\topskip}{0pt}
+
+% Font and encoding settings
+\usepackage{fontspec} % no fontenc needed with XeLaTeX/LuaLaTeX
+\newfontfamily\rhDisplay{Open Sans}[
+  UprightFont = *-Regular ,
+  BoldFont = *-Bold
+]
+\setmainfont{Open Sans} % main text
+
+
+% Enable graphics
+\usepackage{graphicx}
+% Automatic data processing package
+\usepackage{datatool}
+
+% Ticket setup
+\setlength{\unitlength}{1mm}
+\ticketSize{109}{152}
+\ticketDistance{0}{0}
+\ticketNumbers{4}{2}
+
+% Make your default ticket. \ticketdefault is somewhat like a background
+\renewcommand{\ticketdefault}{}
+
+% now what do you like to put in your ticket
+\newcommand{\badgeO}[3]{\ticket{
+  \put(0,0){\includegraphics[width=109mm]{#1}}
+  \put(54.5,32){\makebox[0mm]{\parbox[t][][t]{90mm}{\fontsize{30}{36}\centering\rhDisplay\bfseries #2}}} % name
+  \put(54.5,18){\makebox[0mm]{\parbox[t][][t]{90mm}{\fontsize{30}{36}\centering\rhDisplay\bfseries #3}}} % surname
+}}
+
+\newcommand{\badgeS}[3]{\ticket{
+  \put(0,0){\includegraphics[width=109mm]{#1}}
+  \put(54.5,32){\makebox[0mm]{\parbox[t][][t]{90mm}{\fontsize{30}{36}\centering\rhDisplay\bfseries #2}}} % name
+  \put(54.5,18){\makebox[0mm]{\parbox[t][][t]{90mm}{\fontsize{30}{36}\centering\rhDisplay\bfseries #3}}} % surname
+}}
+
+%\newcommand{\badgeB}[3]{\ticket{
+%  \put(0,0){\includegraphics[width=109mm]{#1}}
+%  \put(54.5,32){\makebox[0mm]{\parbox[t][][t]{90mm}{\fontsize{30}{36}\centering\rhDisplay\bfseries #2}}} % name
+%  \put(54.5,18){\makebox[0mm]{\parbox[t][][t]{90mm}{\fontsize{30}{36}\centering\rhDisplay\bfseries #3}}} % surname
+%}}
+
+%\newcommand{\badgeA}[3]{\ticket{
+%  \put(0,0){\includegraphics[width=109mm]{#1}}
+%  \put(54.5,32){\makebox[0mm]{\parbox[t][][t]{90mm}{\fontsize{30}{36}\centering\rhDisplay\bfseries #2}}} % name
+%  \put(54.5,18){\makebox[0mm]{\parbox[t][][t]{90mm}{\fontsize{30}{36}\centering\rhDisplay\bfseries #3}}} % surname
+%}}
+ 
+\newcommand{\badgeNoPhoto}[1]{\ticket{
+  \put(0,0){\includegraphics[width=109mm]{#1}}
+}}
+
+\begin{document}
+
+% Load attendees list
+% default separator is coma and default delimiter is double quote
+\DTLloaddb{orgs}{orgs.csv}
+\DTLloaddb{speakers}{speakers.csv}
+%\DTLloaddb{booth}{booth.csv}
+%\DTLloaddb{attendees}{attendees.csv}
+
+% Start badges for Organizers
+\DTLforeach{orgs}{
+  \name=name,
+  \surname=surname}{
+\badgeO{badgeO.png}{\name}{\surname}
+} % End badges
+
+% Start badges for Speakers
+\DTLforeach{speakers}{
+  \name=name,
+  \surname=surname}{
+\badgeS{badgeS.png}{\name}{\surname}
+} % End badges
+%
+% Start badges for People in a Booth
+%\DTLforeach{booth}{
+%  \name=name,
+%  \surname=surname}{
+%\badgeB{badgeB.png}{\name}{\surname}
+%} % End badges
+
+% Start badges for Attendees
+%\DTLforeach{attendees}{
+%  \name=name,
+%  \surname=surname}{
+%\badgeA{badgeA.png}{\name}{\surname}
+%} % End badges
+
+\newcount\i
+\i=0
+\loop
+  \advance\i by 1
+  \badgeNoPhoto{badgeNoPhoto.png}
+\ifnum\i<48
+\repeat
+
+\end{document}
+badgeNoPhoto

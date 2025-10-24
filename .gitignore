@@ -1,0 +1,6 @@
+# Final attendees files
+*.csv
+# Generated outputs
+*.pdf
+*.aux
+*.log
